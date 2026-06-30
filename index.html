@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ООО «ИнвестПарк» — Стратегический финансовый консалтинг</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy-deep:#070f1d;
+    --navy:#0d1b2e;
+    --navy-soft:#13243b;
+    --gold:#c9a961;
+    --gold-bright:#e8c98a;
+    --cream:#f4efe4;
+    --ink-soft:#aab4c4;
+    --hairline:rgba(201,169,97,0.22);
+    --glow:rgba(201,169,97,0.35);
+    --ease:0.45s cubic-bezier(.22,.61,.36,1);
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html{ scroll-behavior:smooth; }
+
+  body{
+    background:var(--navy-deep);
+    color:var(--cream);
+    font-family:'Manrope', sans-serif;
+    font-weight:300;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+
+  h1,h2,h3,.serif{ font-family:'Cormorant Garamond', serif; font-weight:500; letter-spacing:0.2px; }
+  a{ color:inherit; text-decoration:none; }
+  img,svg{ display:block; max-width:100%; }
+  .container{ max-width:1180px; margin:0 auto; padding:0 6%; }
+  ::selection{ background:var(--gold); color:var(--navy-deep); }
+
+  /* ============ AMBIENT ANIMATED BACKGROUND ============ */
+  .ambient{ position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden; }
+  .ambient canvas{ position:absolute; inset:0; width:100%; height:100%; opacity:0.55; }
+  .ambient .orb{ position:absolute; border-radius:50%; filter:blur(90px); opacity:0.35; animation: float 18s ease-in-out infinite; }
+  .orb-1{ width:520px; height:520px; background:radial-gradient(circle, rgba(201,169,97,0.5), transparent 70%); top:-10%; left:-8%; }
+  .orb-2{ width:460px; height:460px; background:radial-gradient(circle, rgba(60,110,180,0.45), transparent 70%); top:30%; right:-10%; animation-delay:-6s; }
+  .orb-3{ width:380px; height:380px; background:radial-gradient(circle, rgba(201,169,97,0.3), transparent 70%); bottom:-12%; left:25%; animation-delay:-12s; }
+  @keyframes float{
+    0%, 100%{ transform:translate(0,0) scale(1); }
+    33%{ transform:translate(30px,-40px) scale(1.08); }
+    66%{ transform:translate(-25px,30px) scale(0.95); }
+  }
+
+  main, header, footer{ position:relative; z-index:1; }
+
+  /* ============ NAVBAR ============ */
+  .navbar{
+    position:fixed; top:0; left:0; right:0; z-index:200;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:22px 6%;
+    background:linear-gradient(to bottom, rgba(7,15,29,0.85), rgba(7,15,29,0));
+    transition: background var(--ease), padding var(--ease), backdrop-filter var(--ease);
+  }
+  .navbar.scrolled{ background:rgba(7,15,29,0.88); backdrop-filter:blur(16px); padding:14px 6%; border-bottom:1px solid var(--hairline); }
+  .nav-logo{ font-family:'Cormorant Garamond', serif; font-size:21px; letter-spacing:2px; font-weight:600; }
+  .nav-logo em{ color:var(--gold); font-style:normal; }
+  .nav-links{ display:flex; gap:40px; list-style:none; }
+  .nav-links a{ font-size:11.5px; letter-spacing:2px; text-transform:uppercase; color:var(--ink-soft); position:relative; padding-bottom:6px; transition: color var(--ease); }
+  .nav-links a::after{ content:''; position:absolute; left:0; bottom:0; width:0; height:1px; background:var(--gold); transition: width var(--ease); }
+  .nav-links a:hover{ color:var(--cream); }
+  .nav-links a:hover::after{ width:100%; }
+  .nav-cta{ font-size:11px; letter-spacing:2px; text-transform:uppercase; border:1px solid var(--gold); color:var(--gold); padding:10px 22px; border-radius:1px; transition: background var(--ease), color var(--ease), box-shadow var(--ease); }
+  .nav-cta:hover{ background:var(--gold); color:var(--navy-deep); box-shadow:0 0 24px var(--glow); }
+  .burger{ display:none; flex-direction:column; gap:5px; cursor:pointer; background:none; border:none; z-index:210; }
+  .burger span{ width:22px; height:1px; background:var(--gold); transition:transform var(--ease), opacity var(--ease); }
+  .burger.open span:nth-child(1){ transform:translateY(6px) rotate(45deg); }
+  .burger.open span:nth-child(2){ opacity:0; }
+  .burger.open span:nth-child(3){ transform:translateY(-6px) rotate(-45deg); }
+
+  .mobile-drawer{
+    position:fixed; top:0; right:0; height:100vh; height:100dvh; width:min(82vw,340px);
+    background:rgba(8,16,28,0.98); backdrop-filter:blur(18px);
+    border-left:1px solid var(--hairline);
+    display:flex; flex-direction:column; gap:26px; padding:110px 36px;
+    transform:translateX(100%); transition:transform 0.4s cubic-bezier(.22,.61,.36,1);
+    z-index:205;
+  }
+  .mobile-drawer.open{ transform:translateX(0); }
+  .mobile-drawer a{ font-size:15px; letter-spacing:1.5px; text-transform:uppercase; color:var(--ink-soft); border-bottom:1px solid var(--hairline); padding-bottom:14px; }
+  .mobile-drawer a:hover{ color:var(--gold); }
+  .drawer-backdrop{ position:fixed; inset:0; background:rgba(2,5,10,0.6); z-index:204; opacity:0; pointer-events:none; transition:opacity var(--ease); }
+  .drawer-backdrop.open{ opacity:1; pointer-events:auto; }
+
+  /* ============ BADGE STRIP ============ */
+  .badge-strip{
+    position:relative; z-index:2;
+    display:flex; align-items:center; justify-content:center; gap:10px; text-align:center;
+    padding:10px 6%; font-size:11px; letter-spacing:0.6px; line-height:1.4;
+    background:linear-gradient(90deg, rgba(201,169,97,0.12), rgba(201,169,97,0.04));
+    border-bottom:1px solid var(--hairline);
+    color:var(--gold-bright);
+  }
+  .badge-strip .dot{ width:6px; height:6px; flex:none; border-radius:50%; background:var(--gold); box-shadow:0 0 8px var(--gold); animation:pulse-dot 1.8s ease-in-out infinite; }
+  @keyframes pulse-dot{ 0%,100%{ opacity:1; } 50%{ opacity:0.35; } }
+
+  /* ============ HERO ============ */
+  .hero{ position:relative; padding-top:120px; overflow:hidden; }
+  .hero-grid{
+    display:grid; grid-template-columns:1.05fr 0.95fr; gap:48px; align-items:center;
+    padding:64px 6% 80px;
+  }
+  .hero-eyebrow{
+    font-size:11.5px; letter-spacing:4px; text-transform:uppercase; color:var(--gold);
+    display:inline-flex; align-items:center; gap:14px;
+    border:1px solid var(--hairline); padding:8px 16px 8px 14px; border-radius:30px;
+    background:rgba(201,169,97,0.06);
+  }
+  .hero-eyebrow .dot{ width:6px; height:6px; border-radius:50%; background:var(--gold); box-shadow:0 0 8px var(--gold); }
+  .hero-title{ font-size:clamp(34px,5vw,60px); line-height:1.1; margin:24px 0 22px; font-weight:500; }
+  .hero-title .accent{
+    background:linear-gradient(90deg, var(--gold-bright), var(--gold) 60%, #fff3da);
+    -webkit-background-clip:text; background-clip:text; color:transparent; font-style:italic;
+  }
+  .hero-sub{ font-size:15px; line-height:1.85; color:var(--ink-soft); max-width:480px; font-weight:300; }
+  .hero-cta{ display:flex; gap:16px; margin-top:38px; flex-wrap:wrap; align-items:center; }
+  .btn{
+    font-family:'Manrope', sans-serif; font-size:11.5px; letter-spacing:2px; text-transform:uppercase;
+    padding:16px 32px; border-radius:1px; cursor:pointer; transition: all var(--ease);
+    display:inline-block; position:relative; overflow:hidden; text-align:center;
+  }
+  .btn-primary{ background:var(--gold); color:var(--navy-deep); border:1px solid var(--gold); }
+  .btn-primary:hover{ box-shadow:0 0 32px var(--glow); transform:translateY(-2px); }
+  .btn-primary::after{
+    content:''; position:absolute; top:0; left:-120%; width:60%; height:100%;
+    background:linear-gradient(120deg, transparent, rgba(255,255,255,0.45), transparent);
+    transform:skewX(-20deg); transition:left 0.7s ease;
+  }
+  .btn-primary:hover::after{ left:140%; }
+  .btn-ghost{ background:transparent; color:var(--cream); border:1px solid rgba(244,239,228,0.3); }
+  .btn-ghost:hover{ border-color:var(--gold); color:var(--gold); }
+  .hero-microtext{ font-size:11.5px; color:var(--ink-soft); letter-spacing:0.5px; margin-top:22px; }
+  .hero-microtext strong{ color:var(--gold-bright); font-weight:600; }
+
+  /* Hero dashboard mockup visual */
+  .hero-visual{ position:relative; }
+  .hero-visual svg{ width:100%; height:auto; filter:drop-shadow(0 30px 60px rgba(0,0,0,0.5)); }
+  .hero-visual-glow{
+    position:absolute; inset:-10%; z-index:-1;
+    background:radial-gradient(circle at 50% 40%, rgba(201,169,97,0.18), transparent 65%);
+    filter:blur(20px);
+  }
+
+  .hero-stats{
+    position:relative; z-index:2; display:flex; flex-wrap:wrap;
+    border-top:1px solid var(--hairline); max-width:1180px; margin:0 auto; padding:0 6%;
+    background:linear-gradient(180deg, rgba(13,27,46,0), rgba(13,27,46,0.5));
+  }
+  .stat{ flex:1 1 25%; min-width:140px; padding:30px 0; border-right:1px solid var(--hairline); transition: background var(--ease); }
+  .stat:hover{ background:rgba(201,169,97,0.05); }
+  .stat:last-child{ border-right:none; }
+  .stat-num{ font-family:'Cormorant Garamond', serif; font-size:32px; color:var(--gold-bright); font-weight:500; }
+  .stat-label{ font-size:10px; letter-spacing:1.3px; text-transform:uppercase; color:var(--ink-soft); margin-top:8px; }
+
+  /* ============ SECTION SHELL ============ */
+  .section{ padding:96px 0; position:relative; }
+  .section.alt{ background:linear-gradient(180deg, var(--navy), var(--navy-soft) 80%); }
+  .section-head{ max-width:600px; margin-bottom:56px; }
+  .eyebrow{ font-size:11px; letter-spacing:3px; text-transform:uppercase; color:var(--gold); }
+  .section-title{ font-size:clamp(25px,3.2vw,38px); margin-top:16px; line-height:1.22; }
+  .section-desc{ color:var(--ink-soft); font-size:14px; line-height:1.85; margin-top:16px; max-width:520px; }
+
+  /* ============ SERVICES ============ */
+  .services-grid{ display:grid; grid-template-columns:repeat(4, 1fr); gap:20px; }
+  .service-card{
+    position:relative; background:rgba(244,239,228,0.025); border:1px solid var(--hairline);
+    backdrop-filter:blur(8px); border-radius:6px; padding:38px 28px;
+    transition: transform var(--ease), border-color var(--ease), box-shadow var(--ease), background var(--ease);
+    display:flex; flex-direction:column;
+  }
+  .service-card:hover{ transform:translateY(-8px); border-color:var(--gold); box-shadow:0 20px 50px rgba(0,0,0,0.4), 0 0 30px rgba(201,169,97,0.12); background:rgba(244,239,228,0.045); }
+  .service-card.featured{
+    border-color:var(--gold); background:linear-gradient(160deg, rgba(201,169,97,0.14), rgba(244,239,228,0.02));
+    box-shadow:0 0 0 1px var(--gold), 0 25px 60px rgba(0,0,0,0.45), 0 0 30px rgba(201,169,97,0.14);
+    animation: featured-pulse 4s ease-in-out infinite;
+  }
+  @keyframes featured-pulse{
+    0%,100%{ box-shadow:0 0 0 1px var(--gold), 0 25px 60px rgba(0,0,0,0.45), 0 0 30px rgba(201,169,97,0.14); }
+    50%{ box-shadow:0 0 0 1px var(--gold-bright), 0 25px 60px rgba(0,0,0,0.45), 0 0 55px rgba(201,169,97,0.3); }
+  }
+  .service-card.featured::before{
+    content:attr(data-ribbon); position:absolute; top:-12px; left:28px;
+    background:var(--gold); color:var(--navy-deep); font-size:10px; letter-spacing:1.5px; text-transform:uppercase;
+    padding:5px 14px; border-radius:20px; font-weight:700;
+  }
+  .service-card.featured .service-num{ color:var(--gold-bright); }
+  .service-shield{ position:absolute; top:22px; right:22px; width:32px; height:32px; display:flex; align-items:center; justify-content:center; border:1px solid var(--gold); border-radius:50%; color:var(--gold); }
+  .service-num{ font-family:'Cormorant Garamond', serif; font-size:14px; color:var(--gold); letter-spacing:1px; }
+  .service-card h3{ font-size:21px; margin:18px 0 12px; font-weight:500; }
+  .service-card p{ font-size:13px; line-height:1.85; color:var(--ink-soft); font-weight:300; margin-bottom:18px; }
+  .service-feats{ list-style:none; display:flex; flex-direction:column; gap:9px; margin-bottom:auto; padding-bottom:20px; }
+  .service-feats li{ font-size:12px; color:var(--cream); display:flex; align-items:flex-start; gap:9px; line-height:1.5; }
+  .service-feats li::before{ content:'✓'; color:var(--gold); font-weight:700; flex:none; }
+  .service-link{ font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(--gold); display:inline-flex; align-items:center; gap:8px; border-bottom:1px solid transparent; transition:border-color var(--ease), gap var(--ease); margin-top:auto; }
+  .service-link:hover{ border-color:var(--gold); gap:12px; }
+
+  /* ============ DASHBOARD HIGHLIGHT ============ */
+  .highlight-grid{ display:grid; grid-template-columns:1fr 1fr; gap:56px; align-items:center; }
+  .highlight-visual{ position:relative; }
+  .highlight-visual svg{ width:100%; height:auto; filter:drop-shadow(0 24px 50px rgba(0,0,0,0.45)); }
+  .highlight-points{ display:flex; flex-direction:column; gap:16px; }
+  .point-card{ background:rgba(244,239,228,0.025); border:1px solid var(--hairline); border-radius:6px; padding:24px 26px; transition: border-color var(--ease), background var(--ease); }
+  .point-card:hover{ border-color:var(--gold); background:rgba(244,239,228,0.045); }
+  .point-icon{ width:30px; height:30px; display:flex; align-items:center; justify-content:center; border:1px solid var(--gold); border-radius:50%; color:var(--gold); margin-bottom:14px; }
+  .point-card h4{ font-family:'Manrope'; font-weight:600; font-size:14.5px; margin-bottom:8px; }
+  .point-card p{ font-size:12.5px; color:var(--ink-soft); line-height:1.75; font-weight:300; }
+
+  /* ============ APPROACH / SPLIT ============ */
+  .split{ display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:center; }
+  .split-visual{ position:relative; border-radius:6px; }
+  .split-visual svg{ width:100%; height:auto; filter:drop-shadow(0 24px 50px rgba(0,0,0,0.4)); }
+  .split-glow{ position:absolute; width:220px; height:220px; border-radius:50%; background:radial-gradient(circle, rgba(201,169,97,0.4), transparent 70%); filter:blur(40px); bottom:-40px; right:-40px; z-index:-1; }
+  .approach-list{ margin-top:8px; display:flex; flex-direction:column; }
+  .approach-item{ display:flex; gap:22px; padding:20px 0; border-top:1px solid var(--hairline); transition: padding-left var(--ease); }
+  .approach-item:hover{ padding-left:10px; }
+  .approach-item:last-child{ border-bottom:1px solid var(--hairline); }
+  .approach-mark{ font-family:'Cormorant Garamond', serif; font-size:18px; color:var(--gold); min-width:30px; }
+  .approach-item h4{ font-family:'Manrope'; font-weight:600; font-size:14px; letter-spacing:0.3px; margin-bottom:5px; }
+  .approach-item p{ font-size:12.5px; color:var(--ink-soft); line-height:1.75; font-weight:300; }
+
+  /* ============ METRICS BAND ============ */
+  .metrics-band{ position:relative; background:var(--navy-soft); border-top:1px solid var(--hairline); border-bottom:1px solid var(--hairline); padding:64px 0; overflow:hidden; }
+  .metrics-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:32px; text-align:center; }
+  .metric-num{ font-family:'Cormorant Garamond', serif; font-size:40px; color:var(--gold-bright); font-weight:500; }
+  .metric-label{ font-size:10.5px; letter-spacing:1.3px; text-transform:uppercase; color:var(--ink-soft); margin-top:10px; }
+
+  /* ============ TESTIMONIAL ============ */
+  .testimonial{ max-width:740px; margin:0 auto; text-align:center; padding:0 6%; }
+  .quote-mark{ font-family:'Cormorant Garamond', serif; font-size:58px; color:var(--gold); line-height:1; opacity:0.7; }
+  .testimonial blockquote{ font-family:'Cormorant Garamond', serif; font-size:clamp(20px,2.4vw,28px); font-style:italic; line-height:1.5; color:var(--cream); margin:12px 0 26px; }
+  .testimonial-author{ font-size:11.5px; letter-spacing:1.5px; text-transform:uppercase; color:var(--ink-soft); }
+  .testimonial-author span{ color:var(--gold); }
+
+  /* ============ CTA / CONTACT ============ */
+  .cta-section{ position:relative; padding:110px 0; text-align:center; overflow:hidden; }
+  .cta-glow{
+    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:640px; height:640px; border-radius:50%;
+    background:radial-gradient(circle, rgba(201,169,97,0.14), transparent 70%); pointer-events:none;
+    animation:pulse-glow 6s ease-in-out infinite;
+  }
+  @keyframes pulse-glow{ 0%,100%{ opacity:0.7; transform:translate(-50%,-50%) scale(1); } 50%{ opacity:1; transform:translate(-50%,-50%) scale(1.08); } }
+  .cta-section .section-title{ margin:0 auto 18px; }
+  .cta-section .section-desc{ margin:0 auto 38px; }
+  .contact-form{
+    max-width:520px; margin:0 auto; text-align:left; position:relative; z-index:1;
+    background:rgba(244,239,228,0.025); border:1px solid var(--hairline); border-radius:8px;
+    padding:38px; backdrop-filter:blur(10px);
+  }
+  .field{ margin-bottom:20px; display:flex; flex-direction:column; gap:8px; }
+  .field label{ font-size:10.5px; letter-spacing:2px; text-transform:uppercase; color:var(--ink-soft); }
+  .field input, .field textarea{
+    background:transparent; border:none; border-bottom:1px solid rgba(244,239,228,0.25);
+    color:var(--cream); font-family:'Manrope'; font-size:14px; padding:10px 2px;
+    outline:none; transition:border-color var(--ease), box-shadow var(--ease);
+  }
+  .field textarea{ resize:vertical; min-height:90px; }
+  .field input::placeholder, .field textarea::placeholder{ color:rgba(244,239,228,0.35); }
+  .field input:focus, .field textarea:focus{ border-color:var(--gold); box-shadow:0 1px 0 0 var(--gold); }
+  .field.invalid input, .field.invalid textarea{ border-color:#d97a8c; }
+  .field .error-msg{ font-size:11px; color:#e09aaa; display:none; letter-spacing:0.3px; }
+  .field.invalid .error-msg{ display:block; }
+  .form-status{ font-size:12px; letter-spacing:1px; color:var(--gold); min-height:18px; margin-top:6px; }
+  .form-trust{ display:flex; align-items:center; gap:8px; margin-top:16px; font-size:11px; color:var(--ink-soft); letter-spacing:0.3px; }
+  .form-trust svg{ flex:none; }
+
+  /* ============ FOOTER ============ */
+  footer{ border-top:1px solid var(--hairline); padding:44px 6%; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:18px; }
+  .footer-logo{ font-family:'Cormorant Garamond', serif; font-size:17px; letter-spacing:1px; }
+  .footer-logo em{ color:var(--gold); font-style:normal; }
+  .footer-links{ display:flex; gap:26px; list-style:none; flex-wrap:wrap; }
+  .footer-links a{ font-size:11px; letter-spacing:1px; color:var(--ink-soft); text-transform:uppercase; transition:color var(--ease); }
+  .footer-links a:hover{ color:var(--gold); }
+  .footer-meta{ font-size:11px; color:var(--ink-soft); letter-spacing:0.5px; }
+
+  /* ============ REVEAL ANIMATION ============ */
+  .reveal{ opacity:0; transform:translateY(24px); transition:opacity 0.8s ease, transform 0.8s ease; }
+  .reveal.visible{ opacity:1; transform:translateY(0); }
+
+  /* ============ STICKY MINI CTA ============ */
+  .sticky-cta{
+    position:fixed; bottom:20px; right:20px; z-index:150;
+    display:flex; align-items:center; gap:12px;
+    background:rgba(13,27,46,0.85); backdrop-filter:blur(14px);
+    border:1px solid var(--gold); border-radius:40px; padding:9px 9px 9px 18px;
+    box-shadow:0 10px 40px rgba(0,0,0,0.4), 0 0 24px rgba(201,169,97,0.12);
+    transform:translateY(120%); opacity:0; transition: transform 0.5s ease, opacity 0.5s ease;
+  }
+  .sticky-cta.visible{ transform:translateY(0); opacity:1; }
+  .sticky-cta span{ font-size:11px; letter-spacing:0.4px; color:var(--cream); }
+  .sticky-cta a{ background:var(--gold); color:var(--navy-deep); font-size:10.5px; letter-spacing:1.4px; text-transform:uppercase; padding:9px 18px; border-radius:30px; font-weight:600; transition: box-shadow var(--ease); }
+  .sticky-cta a:hover{ box-shadow:0 0 20px var(--glow); }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width:980px){
+    .nav-links, .nav-cta{ display:none; }
+    .burger{ display:flex; }
+    .services-grid{ grid-template-columns:1fr 1fr; }
+    .hero-grid{ grid-template-columns:1fr; gap:40px; padding-top:36px; }
+    .hero-visual{ order:-1; max-width:480px; margin:0 auto; }
+    .hero-sub{ max-width:100%; }
+    .split{ grid-template-columns:1fr; gap:40px; }
+    .highlight-grid{ grid-template-columns:1fr; gap:36px; }
+    .highlight-visual{ max-width:460px; margin:0 auto; }
+    .metrics-grid{ grid-template-columns:1fr 1fr; gap:30px 20px; }
+  }
+  @media (max-width:620px){
+    .hero{ padding-top:104px; }
+    .hero-grid{ padding:28px 6% 56px; }
+    .hero-stats{ flex-direction:column; }
+    .stat{ border-right:none; border-bottom:1px solid var(--hairline); flex-basis:auto; }
+    .stat:last-child{ border-bottom:none; }
+    .services-grid{ grid-template-columns:1fr; }
+    .section{ padding:72px 0; }
+    .section-head{ margin-bottom:40px; }
+    .metrics-grid{ grid-template-columns:1fr 1fr; gap:28px 16px; }
+    footer{ flex-direction:column; align-items:flex-start; }
+    .sticky-cta{ left:14px; right:14px; justify-content:space-between; }
+    .contact-form{ padding:26px 22px; }
+    .badge-strip{ font-size:10.5px; padding:9px 5%; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ transition-duration:0.01ms !important; animation-duration:0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="ambient">
+  <canvas id="bgCanvas"></canvas>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+</div>
+
+<div class="badge-strip">
+  <span class="dot"></span>
+  Свободно 3 слота на аудит в этом квартале — старт в течение 7 дней
+</div>
+
+<nav class="navbar" id="navbar">
+  <div class="nav-logo">Инвест<em>Парк</em></div>
+  <ul class="nav-links">
+    <li><a href="#services">Услуги</a></li>
+    <li><a href="#approach">Подход</a></li>
+    <li><a href="#results">Результаты</a></li>
+    <li><a href="#contact">Контакты</a></li>
+  </ul>
+  <a href="#contact" class="nav-cta">Консультация</a>
+  <button class="burger" id="burgerBtn" aria-label="Открыть меню">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="drawer-backdrop" id="drawerBackdrop"></div>
+<div class="mobile-drawer" id="mobileDrawer">
+  <a href="#services">Услуги</a>
+  <a href="#approach">Подход</a>
+  <a href="#results">Результаты</a>
+  <a href="#contact">Контакты</a>
+</div>
+
+<header class="hero">
+  <div class="hero-grid">
+    <div class="hero-text">
+      <div class="hero-eyebrow"><span class="dot"></span>Стратегический финансовый консалтинг</div>
+      <h1 class="hero-title">Финансовая ясность<br>для <span class="accent">уверенного</span><br>роста бизнеса</h1>
+      <p class="hero-sub">Аудит, управленческая отчётность и собственные дашборды для собственников и финансовых директоров, которым нужна точная картина бизнеса — без шума и догадок.</p>
+      <div class="hero-cta">
+        <a href="#contact" class="btn btn-primary">Запросить консультацию</a>
+        <a href="#services" class="btn btn-ghost">Наши услуги</a>
+      </div>
+      <p class="hero-microtext">Первая диагностическая сессия — <strong>бесплатно</strong>, без обязательств</p>
+    </div>
+
+    <div class="hero-visual reveal">
+      <div class="hero-visual-glow"></div>
+      <svg viewBox="0 0 640 480" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="panelGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#13243b"/>
+            <stop offset="100%" stop-color="#0d1b2e"/>
+          </linearGradient>
+          <linearGradient id="barGrad" x1="0" y1="1" x2="0" y2="0">
+            <stop offset="0%" stop-color="#8a6f35"/>
+            <stop offset="100%" stop-color="#e8c98a"/>
+          </linearGradient>
+          <linearGradient id="lineGrad" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#c9a961"/>
+            <stop offset="100%" stop-color="#fff3da"/>
+          </linearGradient>
+        </defs>
+        <rect x="20" y="20" width="600" height="440" rx="14" fill="url(#panelGrad)" stroke="#c9a961" stroke-opacity="0.35"/>
+        <circle cx="46" cy="46" r="5" fill="#e09aaa" opacity="0.8"/>
+        <circle cx="64" cy="46" r="5" fill="#e8c98a" opacity="0.8"/>
+        <circle cx="82" cy="46" r="5" fill="#7fb89a" opacity="0.8"/>
+        <line x1="20" y1="68" x2="620" y2="68" stroke="#c9a961" stroke-opacity="0.2"/>
+
+        <rect x="44" y="92" width="168" height="64" rx="6" fill="#f4efe4" fill-opacity="0.04" stroke="#c9a961" stroke-opacity="0.3"/>
+        <text x="58" y="116" fill="#aab4c4" font-family="Manrope, sans-serif" font-size="10" letter-spacing="1">ВЫРУЧКА, МЕС.</text>
+        <text x="58" y="142" fill="#e8c98a" font-family="Cormorant Garamond, serif" font-size="24" font-weight="600">12.4М ₽</text>
+
+        <rect x="236" y="92" width="168" height="64" rx="6" fill="#f4efe4" fill-opacity="0.04" stroke="#c9a961" stroke-opacity="0.3"/>
+        <text x="250" y="116" fill="#aab4c4" font-family="Manrope, sans-serif" font-size="10" letter-spacing="1">МАРЖА</text>
+        <text x="250" y="142" fill="#e8c98a" font-family="Cormorant Garamond, serif" font-size="24" font-weight="600">31.2%</text>
+
+        <rect x="428" y="92" width="168" height="64" rx="6" fill="#f4efe4" fill-opacity="0.04" stroke="#c9a961" stroke-opacity="0.3"/>
+        <text x="442" y="116" fill="#aab4c4" font-family="Manrope, sans-serif" font-size="10" letter-spacing="1">ДЕНЕЖНЫЙ ПОТОК</text>
+        <text x="442" y="142" fill="#e8c98a" font-family="Cormorant Garamond, serif" font-size="24" font-weight="600">+4.1М ₽</text>
+
+        <rect x="44" y="178" width="318" height="246" rx="6" fill="#f4efe4" fill-opacity="0.03" stroke="#c9a961" stroke-opacity="0.25"/>
+        <text x="58" y="202" fill="#cfd6df" font-family="Manrope, sans-serif" font-size="11" letter-spacing="0.5">Динамика выручки по направлениям</text>
+        <polyline points="58,360 100,330 142,345 184,290 226,300 268,250 310,270 352,210" fill="none" stroke="url(#lineGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="352" cy="210" r="5" fill="#fff3da"/>
+        <g opacity="0.5">
+          <line x1="58" y1="200" x2="58" y2="400" stroke="#c9a961" stroke-opacity="0.15"/>
+          <line x1="142" y1="200" x2="142" y2="400" stroke="#c9a961" stroke-opacity="0.15"/>
+          <line x1="226" y1="200" x2="226" y2="400" stroke="#c9a961" stroke-opacity="0.15"/>
+          <line x1="310" y1="200" x2="310" y2="400" stroke="#c9a961" stroke-opacity="0.15"/>
+        </g>
+
+        <rect x="378" y="178" width="218" height="246" rx="6" fill="#f4efe4" fill-opacity="0.03" stroke="#c9a961" stroke-opacity="0.25"/>
+        <text x="392" y="202" fill="#cfd6df" font-family="Manrope, sans-serif" font-size="11" letter-spacing="0.5">Доля направлений</text>
+        <circle cx="487" cy="300" r="64" fill="none" stroke="#1a2e47" stroke-width="22"/>
+        <circle cx="487" cy="300" r="64" fill="none" stroke="url(#barGrad)" stroke-width="22" stroke-dasharray="402" stroke-dashoffset="120" stroke-linecap="round" transform="rotate(-90 487 300)"/>
+        <text x="487" y="307" fill="#f4efe4" font-family="Cormorant Garamond, serif" font-size="22" font-weight="600" text-anchor="middle">70%</text>
+
+        <g>
+          <rect x="392" y="378" width="9" height="9" rx="2" fill="#e8c98a"/>
+          <text x="408" y="387" fill="#aab4c4" font-family="Manrope, sans-serif" font-size="10">Оптовая торговля</text>
+          <rect x="392" y="398" width="9" height="9" rx="2" fill="#3c6eb4"/>
+          <text x="408" y="407" fill="#aab4c4" font-family="Manrope, sans-serif" font-size="10">Производство</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+
+  <div class="hero-stats">
+    <div class="stat reveal"><div class="stat-num" data-count="12" data-suffix="+">0</div><div class="stat-label">лет в финансовом консалтинге</div></div>
+    <div class="stat reveal"><div class="stat-num" data-count="40" data-suffix="+">0</div><div class="stat-label">завершённых проектов</div></div>
+    <div class="stat reveal"><div class="stat-num" data-count="3">0</div><div class="stat-label">отрасли специализации</div></div>
+    <div class="stat reveal"><div class="stat-num" data-count="98" data-suffix="%">0</div><div class="stat-label">клиентов продлевают сотрудничество</div></div>
+  </div>
+</header>
+
+<main>
+
+  <section class="section" id="services">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">Услуги</span>
+        <h2 class="section-title">Четыре направления — один результат: управляемые финансы</h2>
+        <p class="section-desc">Каждая услуга выстроена вокруг одной цели: дать руководству точные данные для решений. Флагманское предложение — собственный сайт с дашбордами, который заменяет дорогие BI-системы.</p>
+      </div>
+    </div>
+    <div class="container">
+      <div class="services-grid">
+        <div class="service-card featured reveal" data-ribbon="Флагманское решение">
+          <div class="service-shield" title="Максимальная безопасность данных">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <div class="service-num">01</div>
+          <h3>Сайт с дашбордами</h3>
+          <p>Собственный веб-сервис с управленческими дашбордами вместо дорогих и негибких BI-платформ. Данные хранятся на вашей инфраструктуре, доступ — только у тех, кому вы его дали.</p>
+          <ul class="service-feats">
+            <li>Данные не покидают периметр клиента</li>
+            <li>Полноценная замена Power BI / Tableau / DataLens</li>
+            <li>Дизайн и логика под ваш бизнес, не шаблон</li>
+            <li>Ролевой доступ и аудит действий пользователей</li>
+          </ul>
+          <a href="#contact" class="service-link">Запросить демо →</a>
+        </div>
+
+        <div class="service-card reveal">
+          <div class="service-num">02</div>
+          <h3>Управленческая отчётность</h3>
+          <p>Построение P&L, ДДС и баланса по реальным данным компании — с разбивкой по направлениям, проектам и центрам прибыли.</p>
+          <ul class="service-feats">
+            <li>P&L / ДДС / Баланс под ключ</li>
+            <li>Разбивка по направлениям</li>
+            <li>Ежемесячное сопровождение</li>
+          </ul>
+          <a href="#contact" class="service-link">Подробнее →</a>
+        </div>
+
+        <div class="service-card reveal">
+          <div class="service-num">03</div>
+          <h3>Автоматизация учёта</h3>
+          <p>Настройка и доработка 1C, исключение ручного ввода, интеграция между системами и автоматическое формирование первичных данных для отчётности.</p>
+          <ul class="service-feats">
+            <li>Доработка конфигураций 1C</li>
+            <li>Исключение ручных операций</li>
+            <li>Интеграция систем и обмен данными</li>
+          </ul>
+          <a href="#contact" class="service-link">Подробнее →</a>
+        </div>
+
+        <div class="service-card reveal">
+          <div class="service-num">04</div>
+          <h3>Аудит и управленческий учёт</h3>
+          <p>Глубокая диагностика учётных процессов, выявление узких мест в 1C, проверка корректности налогового и управленческого учёта.</p>
+          <ul class="service-feats">
+            <li>Аудит данных 1C / ERP</li>
+            <li>Карта рисков и узких мест</li>
+            <li>Отчёт с приоритетами</li>
+          </ul>
+          <a href="#contact" class="service-link">Подробнее →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section alt" id="dashboard-highlight">
+    <div class="container">
+      <div class="highlight-grid">
+        <div class="reveal">
+          <span class="eyebrow">Флагманская услуга</span>
+          <h2 class="section-title" style="margin-top:14px;">Свой сайт с дашбордами — вместо аренды чужой BI-системы</h2>
+          <p class="section-desc">Вы перестаёте зависеть от лицензий Power BI, Tableau или Yandex DataLens и получаете сервис, который принадлежит только вам — с архитектурой, заточенной под ваши процессы и данные 1C.</p>
+          <div class="hero-cta" style="margin-top:30px;">
+            <a href="#contact" class="btn btn-primary">Обсудить проект</a>
+          </div>
+        </div>
+
+        <div class="highlight-points reveal">
+          <div class="point-card">
+            <div class="point-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+            <h4>Максимальная безопасность данных</h4>
+            <p>Размещение на вашей инфраструктуре или закрытом контуре. Никаких третьих лиц с доступом к финансовым данным — в отличие от облачных BI-сервисов.</p>
+          </div>
+          <div class="point-card">
+            <div class="point-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18M7 13l4-4 3 3 5-6"/></svg></div>
+            <h4>Полноценная альтернатива BI-системам</h4>
+            <p>Те же возможности визуализации и фильтрации, что в Power BI или DataLens — но без подписок, ограничений лицензий и зависимости от вендора.</p>
+          </div>
+          <div class="point-card">
+            <div class="point-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2.4 7.2H22l-6 4.6L18.4 21 12 16.4 5.6 21 8 13.8 2 9.2h7.6z"/></svg></div>
+            <h4>Полная кастомизация под клиента</h4>
+            <p>Структура отчётов, метрики, фирменный стиль и логика доступа проектируются под конкретный бизнес, а не подгоняются под шаблон платформы.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="approach">
+    <div class="container">
+      <div class="split">
+        <div class="reveal" style="position:relative;">
+          <div class="split-glow"></div>
+          <div class="split-visual">
+            <svg viewBox="0 0 520 600" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="panelGrad2" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#13243b"/>
+                  <stop offset="100%" stop-color="#0a1626"/>
+                </linearGradient>
+                <linearGradient id="barGrad2" x1="0" y1="1" x2="0" y2="0">
+                  <stop offset="0%" stop-color="#6f5a2c"/>
+                  <stop offset="100%" stop-color="#e8c98a"/>
+                </linearGradient>
+              </defs>
+              <rect x="16" y="16" width="488" height="568" rx="16" fill="url(#panelGrad2)" stroke="#c9a961" stroke-opacity="0.35"/>
+
+              <rect x="16" y="16" width="488" height="56" rx="16" fill="#0d1b2e"/>
+              <rect x="16" y="56" width="488" height="16" fill="#0d1b2e"/>
+              <circle cx="44" cy="44" r="5" fill="#e09aaa" opacity="0.85"/>
+              <circle cx="62" cy="44" r="5" fill="#e8c98a" opacity="0.85"/>
+              <circle cx="80" cy="44" r="5" fill="#7fb89a" opacity="0.85"/>
+              <text x="420" y="48" fill="#aab4c4" font-family="Manrope, sans-serif" font-size="10" letter-spacing="1" text-anchor="end">ИНВЕСТПАРК</text>
+              <line x1="16" y1="72" x2="504" y2="72" stroke="#c9a961" stroke-opacity="0.2"/>
+
+              <text x="40" y="104" fill="#cfd6df" font-family="Manrope, sans-serif" font-size="13" letter-spacing="0.4">Управленческая отчётность · Июнь 2026</text>
+
+              <rect x="40" y="124" width="140" height="76" rx="6" fill="#f4efe4" fill-opacity="0.04" stroke="#c9a961" stroke-opacity="0.3"/>
+              <text x="54" y="150" fill="#aab4c4" font-family="Manrope, sans-serif" font-size="9.5" letter-spacing="1">ВЫРУЧКА</text>
+              <text x="54" y="178" fill="#e8c98a" font-family="Cormorant Garamond, serif" font-size="22" font-weight="600">18.7М ₽</text>
+
+              <rect x="190" y="124" width="140" height="76" rx="6" fill="#f4efe4" fill-opacity="0.04" stroke="#c9a961" stroke-opacity="0.3"/>
+              <text x="204" y="150" fill="#aab4c4" font-family="Manrope, sans-serif" font-size="9.5" letter-spacing="1">EBITDA</text>
+              <text x="204" y="178" fill="#e8c98a" font-family="Cormorant Garamond, serif" font-size="22" font-weight="600">22.4%</text>
+
+              <rect x="340" y="124" width="140" height="76" rx="6" fill="#f4efe4" fill-opacity="0.04" stroke="#c9a961" stroke-opacity="0.3"/>
+              <text x="354" y="150" fill="#aab4c4" font-family="Manrope, sans-serif" font-size="9.5" letter-spacing="1">ДДС</text>
+              <text x="354" y="178" fill="#e8c98a" font-family="Cormorant Garamond, serif" font-size="22" font-weight="600">+2.9М ₽</text>
+
+              <rect x="40" y="220" width="440" height="150" rx="6" fill="#f4efe4" fill-opacity="0.03" stroke="#c9a961" stroke-opacity="0.25"/>
+              <text x="54" y="244" fill="#cfd6df" font-family="Manrope, sans-serif" font-size="11" letter-spacing="0.5">P&amp;L по направлениям</text>
+              <g>
+                <rect x="60" y="320" width="26" height="30" rx="3" fill="url(#barGrad2)"/>
+                <rect x="100" y="300" width="26" height="50" rx="3" fill="url(#barGrad2)"/>
+                <rect x="140" y="280" width="26" height="70" rx="3" fill="url(#barGrad2)"/>
+                <rect x="180" y="260" width="26" height="90" rx="3" fill="url(#barGrad2)"/>
+                <rect x="220" y="310" width="26" height="40" rx="3" fill="url(#barGrad2)"/>
+                <rect x="260" y="270" width="26" height="80" rx="3" fill="url(#barGrad2)"/>
+                <rect x="300" y="290" width="26" height="60" rx="3" fill="url(#barGrad2)"/>
+                <rect x="340" y="255" width="26" height="95" rx="3" fill="url(#barGrad2)"/>
+                <rect x="380" y="265" width="26" height="85" rx="3" fill="url(#barGrad2)"/>
+                <rect x="420" y="245" width="26" height="105" rx="3" fill="url(#barGrad2)"/>
+              </g>
+              <line x1="40" y1="350" x2="480" y2="350" stroke="#c9a961" stroke-opacity="0.25"/>
+
+              <rect x="40" y="386" width="210" height="178" rx="6" fill="#f4efe4" fill-opacity="0.03" stroke="#c9a961" stroke-opacity="0.25"/>
+              <text x="54" y="410" fill="#cfd6df" font-family="Manrope, sans-serif" font-size="11" letter-spacing="0.5">Структура затрат</text>
+              <circle cx="145" cy="490" r="50" fill="none" stroke="#1a2e47" stroke-width="18"/>
+              <circle cx="145" cy="490" r="50" fill="none" stroke="url(#barGrad2)" stroke-width="18" stroke-dasharray="314" stroke-dashoffset="90" stroke-linecap="round" transform="rotate(-90 145 490)"/>
+              <text x="145" y="497" fill="#f4efe4" font-family="Cormorant Garamond, serif" font-size="19" font-weight="600" text-anchor="middle">71%</text>
+
+              <rect x="270" y="386" width="210" height="178" rx="6" fill="#f4efe4" fill-opacity="0.03" stroke="#c9a961" stroke-opacity="0.25"/>
+              <text x="284" y="410" fill="#cfd6df" font-family="Manrope, sans-serif" font-size="11" letter-spacing="0.5">Динамика прибыли</text>
+              <polyline points="284,520 312,505 340,512 368,485 396,495 424,460 452,470" fill="none" stroke="#e8c98a" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="452" cy="470" r="4.5" fill="#fff3da"/>
+            </svg>
+          </div>
+        </div>
+        <div class="reveal">
+          <span class="eyebrow">Подход</span>
+          <h2 class="section-title">От хаоса в цифрах к управляемой картине бизнеса</h2>
+          <div class="approach-list">
+            <div class="approach-item">
+              <div class="approach-mark">I</div>
+              <div><h4>Диагностика</h4><p>Изучаем текущие процессы учёта, источники данных и их достоверность.</p></div>
+            </div>
+            <div class="approach-item">
+              <div class="approach-mark">II</div>
+              <div><h4>Архитектура отчётности</h4><p>Проектируем структуру управленческих отчётов под цели собственника.</p></div>
+            </div>
+            <div class="approach-item">
+              <div class="approach-mark">III</div>
+              <div><h4>Внедрение и автоматизация</h4><p>Настраиваем дашборды и регулярные отчёты, снимая ручной труд.</p></div>
+            </div>
+            <div class="approach-item">
+              <div class="approach-mark">IV</div>
+              <div><h4>Сопровождение</h4><p>Поддерживаем точность данных и развиваем отчётность вместе с бизнесом.</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="metrics-band" id="results">
+    <div class="container">
+      <div class="metrics-grid">
+        <div class="reveal">
+          <div class="metric-num" data-count="27" data-prefix="+" data-suffix="%">0</div>
+          <div class="metric-label">средний рост точности прогноза</div>
+        </div>
+        <div class="reveal">
+          <div class="metric-num" data-count="35" data-prefix="−" data-suffix="%">0</div>
+          <div class="metric-label">сокращение времени на отчётность</div>
+        </div>
+        <div class="reveal">
+          <div class="metric-num" data-count="15">0</div>
+          <div class="metric-label">отраслевых кейсов внедрения</div>
+        </div>
+        <div class="reveal">
+          <div class="metric-num" data-static="4–6">4–6</div>
+          <div class="metric-label">недель на полный аудит</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="testimonial reveal">
+      <div class="quote-mark">«</div>
+      <blockquote>Впервые за три года мы видим реальную картину прибыльности по направлениям — и принимаем решения на основе цифр, а не интуиции.</blockquote>
+      <div class="testimonial-author">Мария В. <span>—</span> Генеральный директор, оптовая торговля</div>
+    </div>
+  </section>
+
+  <section class="section alt cta-section" id="contact">
+    <div class="cta-glow"></div>
+    <div class="container">
+      <span class="eyebrow">Контакты</span>
+      <h2 class="section-title">Готовы навести порядок в финансах?</h2>
+      <p class="section-desc">Оставьте заявку — обсудим текущую ситуацию и предложим формат аудита под ваш бизнес. Или напишите напрямую: <a href="mailto:info@investpark.org" style="color:var(--gold); border-bottom:1px solid rgba(201,169,97,0.4);">info@investpark.org</a></p>
+
+      <form class="contact-form reveal" id="contactForm" novalidate>
+        <div class="field" id="field-name">
+          <label for="cName">Имя *</label>
+          <input type="text" id="cName" placeholder="Ваше имя">
+          <span class="error-msg">Поле обязательно для заполнения</span>
+        </div>
+        <div class="field" id="field-email">
+          <label for="cEmail">Email *</label>
+          <input type="email" id="cEmail" placeholder="info@investpark.org">
+          <span class="error-msg">Введите корректный email</span>
+        </div>
+        <div class="field" id="field-message">
+          <label for="cMessage">Сообщение *</label>
+          <textarea id="cMessage" placeholder="Кратко опишите задачу"></textarea>
+          <span class="error-msg">Поле обязательно для заполнения</span>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%; text-align:center; border:1px solid var(--gold);">Отправить заявку</button>
+        <div class="form-status" id="formStatus"></div>
+        <div class="form-trust">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Данные конфиденциальны, ответ в течение рабочего дня
+        </div>
+      </form>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="footer-logo">Инвест<em>Парк</em></div>
+  <ul class="footer-links">
+    <li><a href="#services">Услуги</a></li>
+    <li><a href="#approach">Подход</a></li>
+    <li><a href="#contact">Контакты</a></li>
+    <li><a href="mailto:info@investpark.org">info@investpark.org</a></li>
+  </ul>
+  <div class="footer-meta">© 2026 ООО «ИнвестПарк»</div>
+</footer>
+
+<div class="sticky-cta" id="stickyCta">
+  <span>Бесплатная диагностика бизнеса</span>
+  <a href="#contact">Записаться</a>
+</div>
+
+<script>
+  /* ===== Ambient particle network background ===== */
+  const canvas = document.getElementById('bgCanvas');
+  const ctx = canvas.getContext('2d');
+  let w, h, particles;
+
+  function resize(){ w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; }
+  function initParticles(){
+    const count = Math.min(70, Math.floor((w*h)/22000));
+    particles = Array.from({length: count}, () => ({
+      x: Math.random()*w, y: Math.random()*h,
+      vx: (Math.random()-0.5)*0.25, vy: (Math.random()-0.5)*0.25,
+      r: Math.random()*1.4 + 0.6
+    }));
+  }
+  function step(){
+    ctx.clearRect(0,0,w,h);
+    for(const p of particles){
+      p.x += p.vx; p.y += p.vy;
+      if(p.x < 0 || p.x > w) p.vx *= -1;
+      if(p.y < 0 || p.y > h) p.vy *= -1;
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+      ctx.fillStyle = 'rgba(201,169,97,0.55)'; ctx.fill();
+    }
+    for(let i=0;i<particles.length;i++){
+      for(let j=i+1;j<particles.length;j++){
+        const a = particles[i], b = particles[j];
+        const dx = a.x-b.x, dy = a.y-b.y;
+        const dist = Math.sqrt(dx*dx+dy*dy);
+        if(dist < 140){
+          ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y);
+          ctx.strokeStyle = `rgba(201,169,97,${0.12 * (1 - dist/140)})`;
+          ctx.lineWidth = 0.6; ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(step);
+  }
+  resize(); initParticles();
+  window.addEventListener('resize', () => { resize(); initParticles(); });
+  if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    requestAnimationFrame(step);
+  }
+
+  /* ===== Navbar scroll state ===== */
+  const navbar = document.getElementById('navbar');
+  const stickyCta = document.getElementById('stickyCta');
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 40);
+    stickyCta.classList.toggle('visible', window.scrollY > 600);
+  });
+
+  /* ===== Mobile drawer ===== */
+  const burgerBtn = document.getElementById('burgerBtn');
+  const mobileDrawer = document.getElementById('mobileDrawer');
+  const drawerBackdrop = document.getElementById('drawerBackdrop');
+  function closeDrawer(){
+    burgerBtn.classList.remove('open'); mobileDrawer.classList.remove('open'); drawerBackdrop.classList.remove('open');
+  }
+  burgerBtn.addEventListener('click', () => {
+    const isOpen = mobileDrawer.classList.toggle('open');
+    burgerBtn.classList.toggle('open', isOpen);
+    drawerBackdrop.classList.toggle('open', isOpen);
+  });
+  drawerBackdrop.addEventListener('click', closeDrawer);
+  mobileDrawer.querySelectorAll('a').forEach(a => a.addEventListener('click', closeDrawer));
+
+  /* ===== Reveal on scroll ===== */
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el => io.observe(el));
+
+  /* ===== Animated counters ===== */
+  const counters = document.querySelectorAll('[data-count]');
+  const counterIO = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        const el = entry.target;
+        const target = parseInt(el.dataset.count, 10);
+        const prefix = el.dataset.prefix || '';
+        const suffix = el.dataset.suffix || '';
+        const duration = 1400;
+        const start = performance.now();
+        function tick(now){
+          const progress = Math.min((now-start)/duration, 1);
+          const eased = 1 - Math.pow(1-progress, 3);
+          el.textContent = prefix + Math.round(eased*target) + suffix;
+          if(progress < 1) requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+        counterIO.unobserve(el);
+      }
+    });
+  }, { threshold: 0.5 });
+  counters.forEach(el => counterIO.observe(el));
+
+  /* ===== Form validation ===== */
+  const form = document.getElementById('contactForm');
+  const formStatus = document.getElementById('formStatus');
+  function setValid(fieldId, ok){ document.getElementById(fieldId).classList.toggle('invalid', !ok); }
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = document.getElementById('cName').value.trim();
+    const email = document.getElementById('cEmail').value.trim();
+    const message = document.getElementById('cMessage').value.trim();
+    const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+    let ok = true;
+    if(!name){ setValid('field-name', false); ok = false; } else setValid('field-name', true);
+    if(!email || !emailValid){ setValid('field-email', false); ok = false; } else setValid('field-email', true);
+    if(!message){ setValid('field-message', false); ok = false; } else setValid('field-message', true);
+
+    formStatus.textContent = ok ? '✓ Заявка отправлена. Мы свяжемся в течение дня.' : '';
+    if(ok) form.reset();
+  });
+
+  ['cName','cEmail','cMessage'].forEach(id => {
+    document.getElementById(id).addEventListener('input', () => {
+      const map = { cName:'field-name', cEmail:'field-email', cMessage:'field-message' };
+      const fieldEl = document.getElementById(map[id]);
+      if(fieldEl.classList.contains('invalid')){
+        const v = document.getElementById(id).value.trim();
+        if(id === 'cEmail'){
+          if(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) fieldEl.classList.remove('invalid');
+        } else if(v){
+          fieldEl.classList.remove('invalid');
+        }
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
