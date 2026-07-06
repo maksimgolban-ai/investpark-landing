@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <style>
   :root{
     --navy-deep:#070f1d;
@@ -153,14 +154,27 @@
 
   .hero-stats{
     position:relative; z-index:2; display:flex; flex-wrap:wrap;
-    border-top:1px solid var(--hairline); max-width:1180px; margin:0 auto; padding:0 6%;
-    background:linear-gradient(180deg, rgba(13,27,46,0), rgba(13,27,46,0.5));
+    border-top:1px solid var(--hairline); border-bottom:1px solid var(--hairline);
+    max-width:100%; margin:0; padding:0 6%;
+    background:linear-gradient(180deg, rgba(13,27,46,0.6), rgba(7,15,29,0.8));
   }
-  .stat{ flex:1 1 25%; min-width:140px; padding:30px 0; border-right:1px solid var(--hairline); transition: background var(--ease); }
-  .stat:hover{ background:rgba(201,169,97,0.05); }
+  .stat{
+    flex:1 1 25%; min-width:140px; padding:40px 24px;
+    border-right:1px solid var(--hairline);
+    text-align:center;
+    transition: background var(--ease);
+  }
+  .stat:hover{ background:rgba(201,169,97,0.06); }
   .stat:last-child{ border-right:none; }
-  .stat-num{ font-family:'Cormorant Garamond', serif; font-size:32px; color:var(--gold-bright); font-weight:500; }
-  .stat-label{ font-size:10px; letter-spacing:1.3px; text-transform:uppercase; color:var(--ink-soft); margin-top:8px; }
+  .stat-num{
+    font-family:'Cormorant Garamond', serif;
+    font-size:clamp(40px, 5vw, 58px);
+    color:var(--gold-bright); font-weight:500; line-height:1;
+  }
+  .stat-label{
+    font-size:11px; letter-spacing:1.8px; text-transform:uppercase;
+    color:var(--ink-soft); margin-top:12px; line-height:1.5;
+  }
 
   /* ============ SECTION SHELL ============ */
   .section{ padding:96px 0; position:relative; }
@@ -316,9 +330,10 @@
   @media (max-width:620px){
     .hero{ padding-top:104px; }
     .hero-grid{ padding:28px 6% 56px; }
-    .hero-stats{ flex-direction:column; }
-    .stat{ border-right:none; border-bottom:1px solid var(--hairline); flex-basis:auto; }
-    .stat:last-child{ border-bottom:none; }
+    .hero-stats{ padding:0 4%; }
+    .stat{ border-right:none; border-bottom:1px solid var(--hairline); flex-basis:50%; min-width:0; padding:30px 16px; }
+    .stat:nth-child(odd){ border-right:1px solid var(--hairline); }
+    .stat:nth-child(3), .stat:nth-child(4){ border-bottom:none; }
     .services-grid{ grid-template-columns:1fr; }
     .section{ padding:72px 0; }
     .section-head{ margin-bottom:40px; }
@@ -343,10 +358,7 @@
   <div class="orb orb-3"></div>
 </div>
 
-<div class="badge-strip">
-  <span class="dot"></span>
-  Свободно 3 слота на аудит в этом квартале — старт в течение 7 дней
-</div>
+
 
 <nav class="navbar" id="navbar">
   <div class="nav-logo">Инвест<em>Парк</em></div>
@@ -447,9 +459,9 @@
 
   <div class="hero-stats">
     <div class="stat reveal"><div class="stat-num" data-count="12" data-suffix="+">0</div><div class="stat-label">лет в финансовом консалтинге</div></div>
-    <div class="stat reveal"><div class="stat-num" data-count="40" data-suffix="+">0</div><div class="stat-label">завершённых проектов</div></div>
-    <div class="stat reveal"><div class="stat-num" data-count="3">0</div><div class="stat-label">отрасли специализации</div></div>
-    <div class="stat reveal"><div class="stat-num" data-count="98" data-suffix="%">0</div><div class="stat-label">клиентов продлевают сотрудничество</div></div>
+    <div class="stat reveal"><div class="stat-num" data-count="10" data-suffix="+">0</div><div class="stat-label">постоянных клиентов</div></div>
+    <div class="stat reveal"><div class="stat-num" data-count="30" data-suffix="+">0</div><div class="stat-label">завершённых проектов</div></div>
+    <div class="stat reveal"><div class="stat-num" data-count="98" data-suffix="%">0</div><div class="stat-label">клиентов продлевают контракт</div></div>
   </div>
 </header>
 
@@ -685,13 +697,20 @@
     <div class="container">
       <span class="eyebrow">Контакты</span>
       <h2 class="section-title">Готовы навести порядок в финансах?</h2>
-      <p class="section-desc">Оставьте заявку — обсудим текущую ситуацию и предложим формат аудита под ваш бизнес. Или напишите напрямую: <a href="mailto:info@investpark.org" style="color:var(--gold); border-bottom:1px solid rgba(201,169,97,0.4);">info@investpark.org</a></p>
+      <p class="section-desc">Оставьте заявку — обсудим текущую ситуацию и предложим формат аудита под ваш бизнес.<br>
+        Или напишите напрямую:&nbsp;
+        <a href="mailto:info@investpark.org" style="color:var(--gold); border-bottom:1px solid rgba(201,169,97,0.4);">info@investpark.org</a>
+      </p>
 
       <form class="contact-form reveal" id="contactForm" novalidate>
         <div class="field" id="field-name">
           <label for="cName">Имя *</label>
           <input type="text" id="cName" placeholder="Ваше имя">
           <span class="error-msg">Поле обязательно для заполнения</span>
+        </div>
+        <div class="field" id="field-phone">
+          <label for="cPhone">Телефон</label>
+          <input type="tel" id="cPhone" placeholder="+7 929 942-40-47">
         </div>
         <div class="field" id="field-email">
           <label for="cEmail">Email *</label>
@@ -829,39 +848,68 @@
   }, { threshold: 0.5 });
   counters.forEach(el => counterIO.observe(el));
 
-  /* ===== Form validation ===== */
+  /* ===== EmailJS init ===== */
+  emailjs.init('s6_ptOJB3A8gXaBRF');
+
+  /* ===== Form validation + EmailJS send ===== */
   const form = document.getElementById('contactForm');
   const formStatus = document.getElementById('formStatus');
+  const submitBtn = form.querySelector('button[type="submit"]');
+
   function setValid(fieldId, ok){ document.getElementById(fieldId).classList.toggle('invalid', !ok); }
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
-    const name = document.getElementById('cName').value.trim();
-    const email = document.getElementById('cEmail').value.trim();
+
+    const name    = document.getElementById('cName').value.trim();
+    const email   = document.getElementById('cEmail').value.trim();
+    const phone   = document.getElementById('cPhone').value.trim();
     const message = document.getElementById('cMessage').value.trim();
     const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
     let ok = true;
-    if(!name){ setValid('field-name', false); ok = false; } else setValid('field-name', true);
-    if(!email || !emailValid){ setValid('field-email', false); ok = false; } else setValid('field-email', true);
-    if(!message){ setValid('field-message', false); ok = false; } else setValid('field-message', true);
+    if(!name)                  { setValid('field-name', false);  ok = false; } else setValid('field-name', true);
+    if(!email || !emailValid)  { setValid('field-email', false); ok = false; } else setValid('field-email', true);
+    if(!message)               { setValid('field-message', false); ok = false; } else setValid('field-message', true);
+    if(!ok) return;
 
-    formStatus.textContent = ok ? '✓ Заявка отправлена. Мы свяжемся в течение дня.' : '';
-    if(ok) form.reset();
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Отправляем...';
+    formStatus.textContent = '';
+
+    const templateParams = {
+      from_name:    name,
+      from_email:   email,
+      from_phone:   phone || 'не указан',
+      message:      message,
+      to_email:     'info@investpark.org'
+    };
+
+    emailjs.send('service_xgscn91', 'template_ltlu1ok', templateParams)
+      .then(() => {
+        formStatus.style.color = 'var(--gold)';
+        formStatus.textContent = '✓ Заявка отправлена. Мы свяжемся в течение дня.';
+        form.reset();
+      })
+      .catch((err) => {
+        console.error('EmailJS error:', err);
+        formStatus.style.color = '#e09aaa';
+        formStatus.textContent = '✗ Ошибка отправки. Напишите напрямую на info@investpark.org';
+      })
+      .finally(() => {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Отправить заявку';
+      });
   });
 
   ['cName','cEmail','cMessage'].forEach(id => {
     document.getElementById(id).addEventListener('input', () => {
       const map = { cName:'field-name', cEmail:'field-email', cMessage:'field-message' };
       const fieldEl = document.getElementById(map[id]);
-      if(fieldEl.classList.contains('invalid')){
-        const v = document.getElementById(id).value.trim();
-        if(id === 'cEmail'){
-          if(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) fieldEl.classList.remove('invalid');
-        } else if(v){
-          fieldEl.classList.remove('invalid');
-        }
-      }
+      if(!fieldEl || !fieldEl.classList.contains('invalid')) return;
+      const v = document.getElementById(id).value.trim();
+      if(id === 'cEmail'){ if(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) fieldEl.classList.remove('invalid'); }
+      else if(v){ fieldEl.classList.remove('invalid'); }
     });
   });
 </script>
